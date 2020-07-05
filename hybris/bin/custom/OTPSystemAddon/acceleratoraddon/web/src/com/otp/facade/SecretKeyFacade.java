@@ -15,13 +15,13 @@ public interface SecretKeyFacade
 	 * @return
 	 * @throws Exception
 	 */
-	String checkUserAuthentication() throws Exception;
+	boolean checkUserAuthentication() throws Exception;
 
 	/**
 	 * @param otp
 	 * @return
 	 * @throws Exception
 	 */
-	boolean validateCodeTypedByUser(String otp) throws Exception;
+	boolean validateCodeTypedByUser(String otp);
 
 }

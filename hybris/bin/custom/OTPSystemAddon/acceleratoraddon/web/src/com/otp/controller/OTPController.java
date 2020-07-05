@@ -50,8 +50,8 @@ public class OTPController extends AbstractPageController
 		LOG.info("Otp Controller to verify whether user is 2-factor enabled or First time logged in user");
 		try
 		{
-			final String userAuthStatus = secretKeyFacade.checkUserAuthentication();
-			LOG.info(userAuthStatus);
+			final boolean isUserEnabledFor2FAuth = secretKeyFacade.checkUserAuthentication();
+			LOG.info(isUserEnabledFor2FAuth);
 		}
 		catch (final Exception e)
 		{
@@ -68,7 +68,7 @@ public class OTPController extends AbstractPageController
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/checkOTP", method = RequestMethod.GET)
-	public String checkOTP(@RequestParam(name = "otp") final String otp) throws Exception
+	public String checkOTP(@RequestParam(name = "otp") final String otp)
 	{
 		LOG.info("OTP Controller to check the OTP authenticity by comparing it with Google Authenticator generated OTP");
 

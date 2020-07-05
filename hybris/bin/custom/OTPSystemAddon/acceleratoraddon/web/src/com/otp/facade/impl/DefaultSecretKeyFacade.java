@@ -47,13 +47,13 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	private static final Logger LOG = Logger.getLogger(DefaultSecretKeyFacade.class);
 
 	@Override
-	public String checkUserAuthentication() throws Exception
+	public boolean checkUserAuthentication() throws Exception
 	{
-
 		if (userService.getCurrentUser().isIsEnabledTwoFactorAuthentication())
 		{
-			// Do Nothing
-			return "Two factor Authentication is already enabled for this user";
+			// Do Nothing and return TRUE
+			LOG.info("Two factor Authentication is already enabled for this user");
+			return Boolean.TRUE;
 		}
 		else if (!userService.getCurrentUser().isIsEnabledTwoFactorAuthentication()
 				&& StringUtils.isEmpty(userService.getCurrentUser().getSecretKeyForOTP()))
@@ -66,13 +66,14 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 				userModel.setSecretKeyForOTP(secretKey);
 				getGoogleAuthenticatorBarCode(secretKey);
 				modelService.save(userModel);
-				return "New User Enabled for 2-Factor Authentication:" + userModel.getUid();
+				LOG.info("New User Enabled for 2-Factor Authentication:" + userModel.getUid());
+				return Boolean.FALSE;
 			}
 			else {
 				LOG.error("Secret Key was not generated for the Logged in User");
 			}
 		}
-		return "";
+		return Boolean.TRUE;
 	}
 
 	/**
@@ -166,7 +167,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	 * @throws Exception
 	 */
 	@Override
-	public boolean validateCodeTypedByUser(final String otp) throws Exception
+	public boolean validateCodeTypedByUser(final String otp)
 	{
 		final UserModel userModel = userService.getCurrentUser();
 		if (StringUtils.isNotEmpty(userModel.getSecretKeyForOTP()))
