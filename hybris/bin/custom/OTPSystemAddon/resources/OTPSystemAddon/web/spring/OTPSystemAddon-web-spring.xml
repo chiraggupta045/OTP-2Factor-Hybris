@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2018 SAP SE or an SAP affiliate company.  All rights reserved.
+
+ This software is the confidential and proprietary information of SAP
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with SAP.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+           
+    <context:annotation-config/> 
+
+ 	<context:component-scan base-package="com.otp" />
+
+	<!-- Expose /acceleratoraddon/web/webroot/WEB-INF/messages/base.js.properties  resource bundle as javascript variables -->
+	<bean id="defaultOTPSystemAddonJavaScriptMessageResourceAccessor" parent="abstractJavaScriptMessageResourceAccessor">
+		<property name="addOnName" value="OTPSystemAddon"/>
+	</bean>
+
+	<bean id="defaultOTPSystemAddonBeforeViewJsPropsHandlerAdaptee" parent="abstractBeforeViewJsPropsHandlerAdaptee" class="de.hybris.platform.addonsupport.interceptors.ExportJsPropertiesBeforeViewHandler">
+		<property name="messageSource" ref="defaultOTPSystemAddonJavaScriptMessageResourceAccessor"/>
+	</bean>
+
+	<bean id="getOTPSystemAddonBeforeViewHandler" parent="beforeViewHandlerAdapter">
+		<property name="adaptee">
+			<ref bean="defaultOTPSystemAddonBeforeViewJsPropsHandlerAdaptee"/>
+		</property>
+	</bean>
+	<bean id="OTPSystemAddonBeforeViewHandlerListMergeDirective" depends-on="beforeViewHandlersList" parent="listMergeDirective">
+		<property name="add" ref="getOTPSystemAddonBeforeViewHandler"/>
+	</bean>
+<!-- 	<alias name="defaultOtpHandler" alias="loginGuidAuthenticationSuccessHandler"/>
+	<bean id="defaultOtpHandler" class="com.otp.handler.OTPGUIDAuthenticationSuccessHandler">
+		<property name="authenticationSuccessHandler" ref="defaultOTPLoginAuthenticationSuccessHandler" />
+		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
+	</bean> -->
+	
+	
+	
+	<alias name="defaultOTPLoginAuthenticationSuccessHandler" alias="loginAuthenticationSuccessHandler"/>
+	<bean id="defaultOTPLoginAuthenticationSuccessHandler" class="com.otp.handler.OTPStorefrontAuthenticationSuccessHandler" >
+		<property name="customerFacade" ref="customerFacade" />
+		<property name="defaultTargetUrl" value="#{'responsive' == '${commerceservices.default.desktop.ui.experience}' ? '/otp/verify' : '/otp/verify'}"/>
+		<property name="useReferer" value="true"/>
+		<property name="requestCache" ref="httpSessionRequestCache" />
+		<property name="uiExperienceService" ref="uiExperienceService"/>
+		<property name="cartFacade" ref="cartFacade"/>
+		<property name="customerConsentDataStrategy" ref="customerConsentDataStrategy"/>
+		<property name="cartRestorationStrategy" ref="cartRestorationStrategy"/>
+		<property name="forceDefaultTargetForUiExperienceLevel">
+			<map key-type="de.hybris.platform.commerceservices.enums.UiExperienceLevel" value-type="java.lang.Boolean">
+				<entry key="DESKTOP" value="false"/>
+				<entry key="MOBILE" value="false"/>
+			</map>
+		</property>
+        <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+		<property name="restrictedPages">
+			<list>
+				<value>/login</value>
+			</list>
+		</property>
+		<property name="listRedirectUrlsForceDefaultTarget">
+			<list></list>
+		</property>
+	</bean>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+</beans>
