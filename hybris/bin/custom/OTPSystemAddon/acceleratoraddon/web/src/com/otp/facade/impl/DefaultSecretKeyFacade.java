@@ -49,12 +49,12 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	private ConfigurationService configurationService;
 
 	@Override
-	public String checkUserAuthentication(final Model model) throws Exception
+	public String checkUserAuthentication() throws Exception
 	{
 
 		if (userService.getCurrentUser().isIsEnabledTwoFactorAuthentication())
 		{
-			// dont do anything
+			// Do Nothing
 			return "Two factor Authentication is already enabled for this user";
 		}
 		else if (!userService.getCurrentUser().isIsEnabledTwoFactorAuthentication()
@@ -64,9 +64,9 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 			final String secretKey = generateSecretKey();
 			userModel.setIsEnabledTwoFactorAuthentication(Boolean.TRUE);
 			userModel.setSecretKeyForOTP(secretKey);
-			getGoogleAuthenticatorBarCode(secretKey, model);
+			getGoogleAuthenticatorBarCode(secretKey);
 			modelService.save(userModel);
-			return "New User Enabled for 2 factor Authentication:-" + userModel.getUid();
+			return "New User Enabled for 2-Factor Authentication:-" + userModel.getUid();
 		}
 		return "";
 	}
@@ -87,11 +87,10 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	/**
 	 *
 	 * @param secretKey
-	 * @param model
-	 * @return
 	 * @throws Exception
 	 */
-	public void getGoogleAuthenticatorBarCode(final String secretKey, final Model model) throws Exception
+
+	public void getGoogleAuthenticatorBarCode(final String secretKey) throws Exception
 	{
 		// Company name
 		final String companyName = "HPE PointNext";
@@ -102,7 +101,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 				+ "?secret=" + URLEncoder.encode(secretKey, "UTF-8").replace("+", "%20") + "&issuer="
 				+ URLEncoder.encode(companyName, "UTF-8").replace("+", "%20");
 		// Create QR Code based on the bar code data generated for the current logged in user and secret key associated to the user.
-		createQRCode(barCodeData, model);
+		createQRCode(barCodeData);
 	}
 
 	/**
@@ -110,7 +109,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	 * @param barCodeData
 	 * @throws Exception
 	 */
-	public void createQRCode(final String barCodeData, final Model model) throws Exception
+	public void createQRCode(final String barCodeData) throws Exception
 	{
 		final UserModel userModel = userService.getCurrentUser();
 		final String userName = userModel.getName();
@@ -146,17 +145,20 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	}
 
 
+	/**
+	 *
+	 * @param otp
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public boolean validateCodeTypedByUser(final String otp) throws Exception
 	{
 		final UserModel userModel = userService.getCurrentUser();
-
 		if (StringUtils.isNotEmpty(userModel.getSecretKeyForOTP()))
 		{
 			final GoogleAuthenticator gAuth = new GoogleAuthenticator();
-
-			final boolean gAuthStatus = gAuth.authorize(userModel.getSecretKeyForOTP(), Integer.valueOf(otp));
-			return gAuthStatus;
+			return gAuth.authorize(userModel.getSecretKeyForOTP(), Integer.parseInt(otp));
 		}
 		return false;
 	}

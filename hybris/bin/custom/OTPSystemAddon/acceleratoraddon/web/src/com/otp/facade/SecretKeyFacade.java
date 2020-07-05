@@ -14,7 +14,12 @@ import org.springframework.ui.Model;
 public interface SecretKeyFacade
 {
 
-	String checkUserAuthentication(Model model) throws Exception;
+	/**
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	String checkUserAuthentication() throws Exception;
 
 	/**
 	 * @param otp

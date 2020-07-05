@@ -6,6 +6,7 @@ package com.otp.controller;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ import com.otp.facade.SecretKeyFacade;
 @RequestMapping(value = "/otp")
 public class OTPController extends AbstractPageController
 {
+
+	private static final Logger LOG = Logger.getLogger(OTPController.class);
+
 	@Autowired
 	private SecretKeyFacade secretKeyFacade;
 
@@ -39,26 +43,24 @@ public class OTPController extends AbstractPageController
 	@RequestMapping(value = "/verify", method = RequestMethod.GET)
 	public String getOTP(final Model model)
 	{
-		System.out.println("==========================OTP Custom Controller=========");
-
+		LOG.info("Otp Controller to verify whether user is 2-factor enabled or First time logged in user");
 		try
 		{
-			final String userAuthStatus = secretKeyFacade.checkUserAuthentication(model);
-			System.out.println(userAuthStatus);
+			final String userAuthStatus = secretKeyFacade.checkUserAuthentication();
+			LOG.info(userAuthStatus);
 		}
 		catch (final Exception e)
 		{
-			System.out.println(e);
+			LOG.error(e.getMessage());
 		}
 		model.addAttribute("qrCodePath", configurationService.getConfiguration().getString("otp.qr.code.images"));
 		return ControllerConstants.Actions.Pages.Account.Otp;
 	}
 
 	@RequestMapping(value = "/checkOTP", method = RequestMethod.GET)
-	public String checkOTP(@RequestParam(name = "otp")
-	final String otp) throws Exception
+	public String checkOTP(@RequestParam(name = "otp") final String otp) throws Exception
 	{
-		System.out.println("========================== Inside Check otp");
+		LOG.info("OTP Controller to check the OTP authenticity by comparing it with Google Authenticator generated OTP");
 
 		final boolean success = secretKeyFacade.validateCodeTypedByUser(otp);
 		if (success)
