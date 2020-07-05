@@ -66,7 +66,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 			userModel.setSecretKeyForOTP(secretKey);
 			getGoogleAuthenticatorBarCode(secretKey);
 			modelService.save(userModel);
-			return "New User Enabled for 2-Factor Authentication:-" + userModel.getUid();
+			return "New User Enabled for 2-Factor Authentication:" + userModel.getUid();
 		}
 		return "";
 	}
