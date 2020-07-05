@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,8 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	@Autowired
 	private ConfigurationService configurationService;
 
+	private static final Logger LOG = Logger.getLogger(DefaultSecretKeyFacade.class);
+
 	@Override
 	public String checkUserAuthentication() throws Exception
 	{
@@ -57,17 +60,23 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		{
 			final UserModel userModel = userService.getCurrentUser();
 			final String secretKey = generateSecretKey();
-			userModel.setIsEnabledTwoFactorAuthentication(Boolean.TRUE);
-			userModel.setSecretKeyForOTP(secretKey);
-			getGoogleAuthenticatorBarCode(secretKey);
-			modelService.save(userModel);
-			return "New User Enabled for 2-Factor Authentication:" + userModel.getUid();
+			if(StringUtils.isNotEmpty(secretKey))
+			{
+				userModel.setIsEnabledTwoFactorAuthentication(Boolean.TRUE);
+				userModel.setSecretKeyForOTP(secretKey);
+				getGoogleAuthenticatorBarCode(secretKey);
+				modelService.save(userModel);
+				return "New User Enabled for 2-Factor Authentication:" + userModel.getUid();
+			}
+			else {
+				LOG.error("Secret Key was not generated for the Logged in User");
+			}
 		}
 		return "";
 	}
 
 	/**
-	 * Generate A random Secret Key from the GoogleAuthenticator Api's
+	 * Generate A random Secret Key from the GoogleAuthenticator API
 	 *
 	 * @return
 	 * @throws Exception
@@ -75,8 +84,15 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	public String generateSecretKey() throws Exception
 	{
 		final GoogleAuthenticator gAuth = new GoogleAuthenticator();
-		final GoogleAuthenticatorKey googleAuthKey = gAuth.createCredentials();
-		return googleAuthKey.getKey();
+		try {
+			final GoogleAuthenticatorKey googleAuthKey = gAuth.createCredentials();
+			return googleAuthKey.getKey();
+		}
+		catch (Exception e)
+		{
+			LOG.error("Error occurred while creating secret key using GoogleAuthenticator API" +e.getMessage());
+		}
+		return "";
 	}
 
 	/**
@@ -88,13 +104,15 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	public void getGoogleAuthenticatorBarCode(final String secretKey) throws Exception
 	{
 		// Company name
-		final String companyName = "HPE PointNext";
+		final String companyName = OTPSystemAddonFacadeConstants.COMPANY_NAME;
 		// Fetching the current user logged in
 		final String userEmail = userService.getCurrentUser().getUid();
 		// Generating the bar code data for the current user and secret key tagged to the user.
-		final String barCodeData = "otpauth://totp/" + URLEncoder.encode(companyName + ":" + userEmail, "UTF-8").replace("+", "%20")
-				+ "?secret=" + URLEncoder.encode(secretKey, "UTF-8").replace("+", "%20") + "&issuer="
-				+ URLEncoder.encode(companyName, "UTF-8").replace("+", "%20");
+		final String barCodeData = OTPSystemAddonFacadeConstants.QR_CODE_DATA_HEADER + URLEncoder.encode(companyName + OTPSystemAddonFacadeConstants.COLON + userEmail,
+				OTPSystemAddonFacadeConstants.QR_CODE_ENCODE_TYPE).replace(OTPSystemAddonFacadeConstants.PLUS, OTPSystemAddonFacadeConstants.QR_C0DE_CHAR_SEQ)
+				+ OTPSystemAddonFacadeConstants.QR_CODE_SECRET + URLEncoder.encode(secretKey, OTPSystemAddonFacadeConstants.QR_CODE_ENCODE_TYPE)
+				.replace(OTPSystemAddonFacadeConstants.PLUS, OTPSystemAddonFacadeConstants.QR_C0DE_CHAR_SEQ) + OTPSystemAddonFacadeConstants.QR_CODE_ISSUER
+				+ URLEncoder.encode(companyName, OTPSystemAddonFacadeConstants.QR_CODE_ENCODE_TYPE).replace(OTPSystemAddonFacadeConstants.PLUS, OTPSystemAddonFacadeConstants.QR_C0DE_CHAR_SEQ);
 		// Create QR Code based on the bar code data generated for the current logged in user and secret key associated to the user.
 		createQRCode(barCodeData);
 	}
@@ -110,11 +128,11 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		final String userName = userModel.getName();
 		final ByteMatrix result = new QRCodeWriter().encode(barCodeData, BarcodeFormat.QR_CODE,
 				OTPSystemAddonFacadeConstants.WIDTH, OTPSystemAddonFacadeConstants.HEIGHT);
-
 		final BitMatrix bitMatrix = convertByteMatrixToBitMatrix(result);
 		final FileOutputStream out = new FileOutputStream(
-				configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) + userName + ".png");
-		MatrixToImageWriter.writeToStream(bitMatrix, "png", out);
+				configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) +
+						userName + OTPSystemAddonFacadeConstants.DOT + OTPSystemAddonFacadeConstants.IMAGE_FORMAT);
+		MatrixToImageWriter.writeToStream(bitMatrix, OTPSystemAddonFacadeConstants.IMAGE_FORMAT, out);
 	}
 
 	/**
@@ -141,7 +159,6 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		return output;
 	}
 
-
 	/**
 	 *
 	 * @param otp
@@ -155,7 +172,13 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		if (StringUtils.isNotEmpty(userModel.getSecretKeyForOTP()))
 		{
 			final GoogleAuthenticator gAuth = new GoogleAuthenticator();
-			return gAuth.authorize(userModel.getSecretKeyForOTP(), Integer.parseInt(otp));
+			try {
+				return gAuth.authorize(userModel.getSecretKeyForOTP(), Integer.parseInt(otp));
+			}
+			catch (Exception e)
+			{
+				LOG.error("Error occurred in comparison of OTP Entered and the OTP Generated by the GA App." +e.getMessage());
+			}
 		}
 		return false;
 	}
