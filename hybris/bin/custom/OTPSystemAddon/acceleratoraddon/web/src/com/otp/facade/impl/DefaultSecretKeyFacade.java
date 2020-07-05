@@ -4,24 +4,17 @@
 package com.otp.facade.impl;
 
 import com.otp.constants.OTPSystemAddonFacadeConstants;
-import com.otp.constants.OTPSystemFacadeConstants;
-import de.hybris.platform.catalog.model.CatalogVersionModel;
-import de.hybris.platform.commercefacades.user.data.CustomerData;
-import de.hybris.platform.core.model.media.MediaModel;
-import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.core.model.user.UserModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.user.UserService;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;

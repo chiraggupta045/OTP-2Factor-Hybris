@@ -2,7 +2,7 @@ package com.otp.constants;
 
 public final class OTPSystemAddonFacadeConstants {
 
-    public OTPSystemAddonFacadeConstants() {
+    private OTPSystemAddonFacadeConstants() {
     }
 
     public static final Integer WIDTH = 400;
