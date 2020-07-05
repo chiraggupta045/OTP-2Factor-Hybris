@@ -3,6 +3,7 @@
  */
 package com.otp.facade.impl;
 
+import com.otp.constants.OTPSystemFacadeConstants;
 import de.hybris.platform.catalog.model.CatalogVersionModel;
 import de.hybris.platform.commercefacades.user.data.CustomerData;
 import de.hybris.platform.core.model.media.MediaModel;
@@ -113,10 +114,12 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	{
 		final UserModel userModel = userService.getCurrentUser();
 		final String userName = userModel.getName();
-		final ByteMatrix result = new QRCodeWriter().encode(barCodeData, BarcodeFormat.QR_CODE, 400, 400);
+		final ByteMatrix result = new QRCodeWriter().encode(barCodeData, BarcodeFormat.QR_CODE,
+				OTPSystemFacadeConstants.WIDTH, OTPSystemFacadeConstants.HEIGHT);
+
 		final BitMatrix bitMatrix = convertByteMatrixToBitMatrix(result);
 		final FileOutputStream out = new FileOutputStream(
-				configurationService.getConfiguration().getString("otp.qr.code.images") + userName + ".png");
+				configurationService.getConfiguration().getString(OTPSystemFacadeConstants.OTP_QR_CODE) + userName + ".png");
 		MatrixToImageWriter.writeToStream(bitMatrix, "png", out);
 	}
 
@@ -127,11 +130,11 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	 */
 	private BitMatrix convertByteMatrixToBitMatrix(final ByteMatrix matrix)
 	{
-		final int matrixWidgth = matrix.getWidth();
+		final int matrixWidth = matrix.getWidth();
 		final int matrixHeight = matrix.getHeight();
-		final BitMatrix output = new BitMatrix(matrixWidgth, matrixHeight);
+		final BitMatrix output = new BitMatrix(matrixWidth, matrixHeight);
 		output.clear();
-		for (int i = 0; i < matrixWidgth; i++)
+		for (int i = 0; i < matrixWidth; i++)
 		{
 			for (int j = 0; j < matrixHeight; j++)
 			{
