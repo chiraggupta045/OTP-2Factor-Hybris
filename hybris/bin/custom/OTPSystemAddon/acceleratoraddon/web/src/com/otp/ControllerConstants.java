@@ -20,7 +20,7 @@ public interface ControllerConstants
 		{
 			interface Account // NOSONAR
 			{
-				String Otp = Cms.ADDON_PREFIX + "pages/OTPTwoFactorLogin.jsp";
+				String OTP = Cms.ADDON_PREFIX + "pages/OTPTwoFactorLogin.jsp";
 			}
 
 		}

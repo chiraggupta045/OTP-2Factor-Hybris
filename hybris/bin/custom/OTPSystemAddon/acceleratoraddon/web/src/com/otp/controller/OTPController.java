@@ -39,7 +39,11 @@ public class OTPController extends AbstractPageController
 	private static final String REDIRECT_HOME_URL = REDIRECT_PREFIX + "/";
 	private static final String REDIRECT_LOGIN_URL = REDIRECT_PREFIX + "/login";
 
-
+	/**
+	 *
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/verify", method = RequestMethod.GET)
 	public String getOTP(final Model model)
 	{
@@ -54,9 +58,15 @@ public class OTPController extends AbstractPageController
 			LOG.error(e.getMessage());
 		}
 		model.addAttribute("qrCodePath", configurationService.getConfiguration().getString("otp.qr.code.images"));
-		return ControllerConstants.Actions.Pages.Account.Otp;
+		return ControllerConstants.Actions.Pages.Account.OTP;
 	}
 
+	/**
+	 *
+	 * @param otp
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/checkOTP", method = RequestMethod.GET)
 	public String checkOTP(@RequestParam(name = "otp") final String otp) throws Exception
 	{
