@@ -41,13 +41,7 @@
 	<bean id="OTPSystemAddonBeforeViewHandlerListMergeDirective" depends-on="beforeViewHandlersList" parent="listMergeDirective">
 		<property name="add" ref="getOTPSystemAddonBeforeViewHandler"/>
 	</bean>
-<!-- 	<alias name="defaultOtpHandler" alias="loginGuidAuthenticationSuccessHandler"/>
-	<bean id="defaultOtpHandler" class="com.otp.handler.OTPGUIDAuthenticationSuccessHandler">
-		<property name="authenticationSuccessHandler" ref="defaultOTPLoginAuthenticationSuccessHandler" />
-		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
-	</bean> -->
-	
-	
+
 	
 	<alias name="defaultOTPLoginAuthenticationSuccessHandler" alias="loginAuthenticationSuccessHandler"/>
 	<bean id="defaultOTPLoginAuthenticationSuccessHandler" class="com.otp.handler.OTPStorefrontAuthenticationSuccessHandler" >

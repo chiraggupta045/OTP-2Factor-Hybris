@@ -4,7 +4,6 @@
 package com.otp.controller;
 
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
-import de.hybris.platform.commercefacades.user.data.CustomerData;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.otp.ControllerConstants;
-import com.otp.facade.OtpFacade;
 import com.otp.facade.SecretKeyFacade;
 
 
@@ -28,9 +26,6 @@ import com.otp.facade.SecretKeyFacade;
 @RequestMapping(value = "/otp")
 public class OTPController extends AbstractPageController
 {
-	@Autowired
-	private OtpFacade otpFacade;
-
 	@Autowired
 	private SecretKeyFacade secretKeyFacade;
 
