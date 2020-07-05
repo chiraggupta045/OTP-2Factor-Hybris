@@ -3,6 +3,7 @@
  */
 package com.otp.facade.impl;
 
+import com.otp.constants.OTPSystemAddonFacadeConstants;
 import com.otp.constants.OTPSystemFacadeConstants;
 import de.hybris.platform.catalog.model.CatalogVersionModel;
 import de.hybris.platform.commercefacades.user.data.CustomerData;
@@ -115,11 +116,11 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		final UserModel userModel = userService.getCurrentUser();
 		final String userName = userModel.getName();
 		final ByteMatrix result = new QRCodeWriter().encode(barCodeData, BarcodeFormat.QR_CODE,
-				OTPSystemFacadeConstants.WIDTH, OTPSystemFacadeConstants.HEIGHT);
+				OTPSystemAddonFacadeConstants.WIDTH, OTPSystemAddonFacadeConstants.HEIGHT);
 
 		final BitMatrix bitMatrix = convertByteMatrixToBitMatrix(result);
 		final FileOutputStream out = new FileOutputStream(
-				configurationService.getConfiguration().getString(OTPSystemFacadeConstants.OTP_QR_CODE) + userName + ".png");
+				configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) + userName + ".png");
 		MatrixToImageWriter.writeToStream(bitMatrix, "png", out);
 	}
 
