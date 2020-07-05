@@ -3,10 +3,6 @@
  */
 package com.otp.facade;
 
-import de.hybris.platform.commercefacades.user.data.CustomerData;
-import org.springframework.ui.Model;
-
-
 /**
  * @author chiragupta
  *
