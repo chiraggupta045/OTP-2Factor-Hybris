@@ -24,4 +24,5 @@ public interface SecretKeyFacade
 	 */
 	boolean validateCodeTypedByUser(String otp);
 
+	String getCustomerUserName();
 }

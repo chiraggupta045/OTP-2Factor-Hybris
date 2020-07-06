@@ -47,17 +47,19 @@ public class OTPController extends AbstractPageController
 	@RequestMapping(value = "/verify", method = RequestMethod.GET)
 	public String getOTP(final Model model)
 	{
+		boolean isUserEnabledFor2FactorAuth = false;
 		LOG.info("Otp Controller to verify whether user is 2-factor enabled or First time logged in user");
 		try
 		{
-			final boolean isUserEnabledFor2FAuth = secretKeyFacade.checkUserAuthentication();
-			LOG.info(isUserEnabledFor2FAuth);
+			isUserEnabledFor2FactorAuth = secretKeyFacade.checkUserAuthentication();
+			LOG.info(isUserEnabledFor2FactorAuth);
 		}
 		catch (final Exception e)
 		{
 			LOG.error(e.getMessage());
 		}
-		model.addAttribute("qrCodePath", configurationService.getConfiguration().getString("otp.qr.code.images"));
+		model.addAttribute("isUserEnabledFor2FactorAuth",isUserEnabledFor2FactorAuth);
+		model.addAttribute("userName",secretKeyFacade.getCustomerUserName());
 		return ControllerConstants.Actions.Pages.Account.OTP;
 	}
 

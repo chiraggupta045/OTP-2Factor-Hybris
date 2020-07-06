@@ -183,4 +183,11 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		}
 		return false;
 	}
+
+	@Override
+	public String getCustomerUserName()
+	{
+		final UserModel userModel = userService.getCurrentUser();
+		return userModel.getName();
+	}
 }
