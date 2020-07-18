@@ -131,7 +131,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 				OTPSystemAddonFacadeConstants.WIDTH, OTPSystemAddonFacadeConstants.HEIGHT);
 		final BitMatrix bitMatrix = convertByteMatrixToBitMatrix(result);
 		final FileOutputStream out = new FileOutputStream(
-				configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) +
+				configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) + "/"+
 						userName + OTPSystemAddonFacadeConstants.DOT + OTPSystemAddonFacadeConstants.IMAGE_FORMAT);
 		MatrixToImageWriter.writeToStream(bitMatrix, OTPSystemAddonFacadeConstants.IMAGE_FORMAT, out);
 	}
@@ -184,6 +184,10 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		return false;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	@Override
 	public String getCustomerUserName()
 	{

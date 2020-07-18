@@ -5,8 +5,8 @@ public final class OTPSystemAddonFacadeConstants {
     private OTPSystemAddonFacadeConstants() {
     }
 
-    public static final Integer WIDTH = 400;
-    public static final Integer HEIGHT = 400;
+    public static final Integer WIDTH = 200;
+    public static final Integer HEIGHT = 200;
 
     public static final String DOT = ".";
     public static final String IMAGE_FORMAT = "png";

@@ -2,11 +2,10 @@ package com.otp.data;
 
 import java.io.Serializable;
 
-lass OtpForm implements Serializable
+public class OtpForm implements Serializable
 {
 
     private String otp;
-
 
     public String getOtp() {
         return otp;
