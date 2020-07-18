@@ -18,6 +18,7 @@ public final class OTPSystemAddonFacadeConstants {
     public static final String QR_C0DE_CHAR_SEQ = "%20";
     public static final String QR_CODE_SECRET = "?secret=";
     public static final String QR_CODE_ISSUER = "&issuer=";
+    public static final String SLASH = "/";
 
     public static final String  OTP_QR_CODE  = "otp.qr.code.images";
 
