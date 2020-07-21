@@ -82,7 +82,7 @@ public class OTPController extends AbstractPageController
 	@RequestMapping(value = "/checkOTP", method = RequestMethod.POST)
 	@RequireHardLogIn
 	public String checkOTP(final OtpForm otpFormData, final BindingResult bindingResult,
-		final Model model, final RedirectAttributes redirectAttributes) throws CMSItemNotFoundException
+		final Model model, final RedirectAttributes redirectAttributes)
 	{
 		LOG.info("OTP Controller to check the OTP authenticity by comparing it with Google Authenticator generated OTP");
 

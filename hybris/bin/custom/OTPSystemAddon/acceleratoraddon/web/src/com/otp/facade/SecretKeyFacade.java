@@ -9,7 +9,6 @@ package com.otp.facade;
  */
 public interface SecretKeyFacade
 {
-
 	/**
 	 *
 	 * @return
@@ -24,5 +23,9 @@ public interface SecretKeyFacade
 	 */
 	boolean validateCodeTypedByUser(String otp);
 
+	/**
+	 *
+	 * @return
+	 */
 	String getCustomerUserName();
 }
