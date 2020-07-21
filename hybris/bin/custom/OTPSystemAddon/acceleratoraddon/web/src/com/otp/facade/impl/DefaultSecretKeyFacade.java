@@ -3,13 +3,16 @@
  */
 package com.otp.facade.impl;
 
+import com.google.zxing.WriterException;
 import com.otp.constants.OTPSystemAddonFacadeConstants;
 import de.hybris.platform.core.model.user.UserModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.user.UserService;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
@@ -123,17 +126,24 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	 * @param barCodeData
 	 * @throws Exception
 	 */
-	public void createQRCode(final String barCodeData) throws Exception
+	public void createQRCode(final String barCodeData)
 	{
 		final UserModel userModel = userService.getCurrentUser();
 		final String userName = userModel.getName();
-		final ByteMatrix result = new QRCodeWriter().encode(barCodeData, BarcodeFormat.QR_CODE,
+		try
+		{
+			final ByteMatrix result = new QRCodeWriter().encode(barCodeData, BarcodeFormat.QR_CODE,
 				OTPSystemAddonFacadeConstants.WIDTH, OTPSystemAddonFacadeConstants.HEIGHT);
-		final BitMatrix bitMatrix = convertByteMatrixToBitMatrix(result);
-		final FileOutputStream out = new FileOutputStream(
-				configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) + OTPSystemAddonFacadeConstants.SLASH+
-						userName + OTPSystemAddonFacadeConstants.DOT + OTPSystemAddonFacadeConstants.IMAGE_FORMAT);
-		MatrixToImageWriter.writeToStream(bitMatrix, OTPSystemAddonFacadeConstants.IMAGE_FORMAT, out);
+			final BitMatrix bitMatrix = convertByteMatrixToBitMatrix(result);
+
+			final FileOutputStream out = new FileOutputStream(
+					configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) + OTPSystemAddonFacadeConstants.SLASH +
+							userName + OTPSystemAddonFacadeConstants.DOT + OTPSystemAddonFacadeConstants.IMAGE_FORMAT);
+			MatrixToImageWriter.writeToStream(bitMatrix, OTPSystemAddonFacadeConstants.IMAGE_FORMAT, out);
+		}
+		catch(IOException | WriterException e) {
+			LOG.error(e.getMessage());
+		}
 	}
 
 	/**
