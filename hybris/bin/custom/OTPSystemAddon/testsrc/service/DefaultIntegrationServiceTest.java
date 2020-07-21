@@ -33,7 +33,7 @@ public class DefaultIntegrationServiceTest {
    public void sendOtpForVerificationTest(){
         Mockito.when(configurationService.getConfiguration()).thenReturn(configuration);
         Mockito.when(configuration.getProperty(Matchers.anyString())).thenReturn("url");
-        Mockito.when(restTemplate.exchange(Matchers.any(),Matchers.any(),Matchers.any(), (Class<Object>) Matchers.anyObject())).thenReturn();
+        Mockito.when(restTemplate.exchange(Matchers.any(),Matchers.any(),Matchers.any(), (Class<Object>) Matchers.anyObject())).thenReturn(responseEntity);
         
     }
 }

@@ -43,7 +43,7 @@ public class OTPController extends AbstractPageController
 	private static final String REDIRECT_LOGIN_URL = REDIRECT_PREFIX + "/login";
 
 	/**
-	 *
+	 *This method is to verify and get the otp
 	 * @param model
 	 * @return
 	 */
@@ -51,7 +51,7 @@ public class OTPController extends AbstractPageController
 	public String getOTP(final Model model)
 	{
 		boolean isUserEnabledFor2FactorAuth = false;
-		LOG.info("Otp Controller to verify whether user is 2-factor enabled or First time logged in user");
+		LOG.debug("Otp Controller to verify whether user is 2-factor enabled or First time logged in user");
 		try
 		{
 			isUserEnabledFor2FactorAuth = secretKeyFacade.checkUserAuthentication();
@@ -70,7 +70,7 @@ public class OTPController extends AbstractPageController
 
 
 	/**
-	 *
+	 * this method is to check wheather the entered otp by user is valid or not
 	 * @param otpFormData
 	 * @return
 	 */

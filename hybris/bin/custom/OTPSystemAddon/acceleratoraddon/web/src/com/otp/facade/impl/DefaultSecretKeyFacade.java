@@ -30,10 +30,7 @@ import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 
 
-/**
- * @author chiragupta
- *
- */
+
 @Component
 public class DefaultSecretKeyFacade implements SecretKeyFacade
 {
@@ -48,14 +45,18 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	private ConfigurationService configurationService;
 
 	private static final Logger LOG = Logger.getLogger(DefaultSecretKeyFacade.class);
-
+	/**
+	 * this method is to check loggedIn user is authenticate or not
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public boolean checkUserAuthentication() throws Exception
 	{
 		if (userService.getCurrentUser().isIsEnabledTwoFactorAuthentication())
 		{
 			// Do Nothing and return TRUE
-			LOG.info("Two factor Authentication is already enabled for this user");
+			LOG.debug("Two factor Authentication is already enabled for this user");
 			return Boolean.TRUE;
 		}
 		else if (!userService.getCurrentUser().isIsEnabledTwoFactorAuthentication()
@@ -69,7 +70,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 				userModel.setSecretKeyForOTP(secretKey);
 				getGoogleAuthenticatorBarCode(secretKey);
 				modelService.save(userModel);
-				LOG.info("New User Enabled for 2-Factor Authentication:" + userModel.getUid());
+				LOG.debug("New User Enabled for 2-Factor Authentication:" + userModel.getUid());
 				return Boolean.FALSE;
 			}
 			else {
@@ -100,7 +101,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	}
 
 	/**
-	 *
+	 *this method will generate Qr Code on the basis of secret key
 	 * @param secretKey
 	 * @throws Exception
 	 */
@@ -122,7 +123,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	}
 
 	/**
-	 *
+	 *this method will generate Qr Code that user will scan in google authenticator app
 	 * @param barCodeData
 	 * @throws Exception
 	 */
@@ -147,7 +148,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	}
 
 	/**
-	 *
+	 *convert ByteMatrix to BitMatrix
 	 * @param matrix
 	 * @return
 	 */
@@ -170,8 +171,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		return output;
 	}
 
-	/**
-	 *
+	/**this method is valide otp entered by user is valid or not
 	 * @param otp
 	 * @return
 	 * @throws Exception
@@ -184,6 +184,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		{
 			final GoogleAuthenticator gAuth = new GoogleAuthenticator();
 			try {
+				//this method of google authenticator will verify the otp
 				return gAuth.authorize(userModel.getSecretKeyForOTP(), Integer.parseInt(otp));
 			}
 			catch (Exception e)
@@ -195,8 +196,8 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	}
 
 	/**
-	 *
-	 * @return
+	 *this method will return the username of customer
+	 * @return username
 	 */
 	@Override
 	public String getCustomerUserName()

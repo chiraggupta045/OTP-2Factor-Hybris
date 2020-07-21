@@ -36,10 +36,7 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 
-/**
- * @author chiragupta
- *
- */
+
 public class OTPStorefrontAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler
 {
 	private CustomerFacade customerFacade;
@@ -64,8 +61,8 @@ public class OTPStorefrontAuthenticationSuccessHandler extends SavedRequestAware
 	{
 		//if redirected from some specific url, need to remove the cachedRequest to force use defaultTargetUrl
 
-		System.out.println("=============================== OTP Custom handler");
 
+        LOG.debug("Inside Otp ");
 
 		final RequestCache requestCache = new HttpSessionRequestCache();
 		final SavedRequest savedRequest = requestCache.getRequest(request, response);

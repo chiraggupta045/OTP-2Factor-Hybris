@@ -4,7 +4,7 @@ public final class OTPSystemAddonFacadeConstants {
 
     private OTPSystemAddonFacadeConstants() {
     }
-
+    // constansts for qr image for otp
     public static final Integer WIDTH = 200;
     public static final Integer HEIGHT = 200;
 

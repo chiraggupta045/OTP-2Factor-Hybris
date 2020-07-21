@@ -31,7 +31,7 @@ public class DefaultOtpFacade implements OtpFacade
 	private ConfigurationService configurationService;
 	@Autowired
 	private SessionService sessionService;
-
+    //constants
 	public static String LANGUAGE = "com.otp.language";
 	public static String SENDER_Id = "com.otp.sender_id";
 	public static String TEMPLATE_ID = "com.otp.template_id";
@@ -50,24 +50,16 @@ public class DefaultOtpFacade implements OtpFacade
 	public ResponseEntity<OtpResponse> sendOtpForVerification(final String number, final String otp)
 	{
 		final RestTemplate restTemplate = new RestTemplate();
-		final OtpRequestPayload otpRequestPayload = new OtpRequestPayload();
-
-
-		otpRequestPayload.setLanguage((String) configurationService.getConfiguration().getProperty(LANGUAGE));
-		otpRequestPayload.setSender_id((String) configurationService.getConfiguration().getProperty(SENDER_Id));
-		otpRequestPayload.setNumbers(number);
-		otpRequestPayload.setMessage((String) configurationService.getConfiguration().getProperty(TEMPLATE_ID));
-		otpRequestPayload.setRoute((String) configurationService.getConfiguration().getProperty(ROUTE_ID));
-		otpRequestPayload.setVariables((String) configurationService.getConfiguration().getProperty(OTP_VARIABLE));
-		otpRequestPayload.setVariables("{#BB#}");
-		otpRequestPayload.setVariables_values(otp);
+		// create the otp request payload
+		final OtpRequestPayload otpRequestPayload = getOtpRequestPayload(number, otp);
 		final HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", (String) configurationService.getConfiguration().getProperty(OTP_KEY));
-
 		final ResponseEntity<OtpResponse> entity = otpIntegrationService.sendOtpForVerification(otpRequestPayload, restTemplate,
 				headers);
 		return entity;
 	}
+
+
 
 	/**
 	 * generate Otp for authentication
@@ -105,18 +97,35 @@ public class DefaultOtpFacade implements OtpFacade
 		return otpEngine.generatePasswordWithHmac(params);
 	}
 
+	/**
+	 * the method will verify otp
+	 * @param otp
+	 * @return
+	 */
 	@Override
 	public boolean verifyingOtp(final String otp)
 	{
 		final String userOtp = sessionService.getAttribute("otp");
-		if (StringUtils.equals(otp, userOtp))
-		{
+		return StringUtils.equals(otp, userOtp);
 
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+	}
+
+	/**
+	 * create the otp request payload
+	 * @param number
+	 * @param otp
+	 * @return
+	 */
+	private OtpRequestPayload getOtpRequestPayload(String number, String otp) {
+		final OtpRequestPayload otpRequestPayload = new OtpRequestPayload();
+		otpRequestPayload.setLanguage((String) configurationService.getConfiguration().getProperty(LANGUAGE));
+		otpRequestPayload.setSender_id((String) configurationService.getConfiguration().getProperty(SENDER_Id));
+		otpRequestPayload.setNumbers(number);
+		otpRequestPayload.setMessage((String) configurationService.getConfiguration().getProperty(TEMPLATE_ID));
+		otpRequestPayload.setRoute((String) configurationService.getConfiguration().getProperty(ROUTE_ID));
+		otpRequestPayload.setVariables((String) configurationService.getConfiguration().getProperty(OTP_VARIABLE));
+		otpRequestPayload.setVariables("{#BB#}");
+		otpRequestPayload.setVariables_values(otp);
+		return otpRequestPayload;
 	}
 }
