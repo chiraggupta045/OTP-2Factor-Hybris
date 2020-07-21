@@ -70,7 +70,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 				return Boolean.FALSE;
 			}
 			else {
-				LOG.error("Secret Key was not generated for the Logged in User");
+				LOG.error("Secret Key was not generated for the Logged in User"+ userModel.getUid());
 			}
 		}
 		return Boolean.TRUE;
