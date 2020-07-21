@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="formElement" tagdir="/WEB-INF/tags/responsive/formElement" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <style>
 h4{
 	font-family: 'Raleway', sans-serif;
@@ -22,16 +22,16 @@ h4{
 </style>
 
 <body>
+
 <c:choose>
  <c:when test="${!isUserEnabledFor2FactorAuth}">
-        <h4>Please Scan the QR code displayed below from the <br>
-        Google Authenticator Application in your Mobile <br>
-        and Enter the six digit OTP Code</h4>
+     <h4><spring:message code="text.otp.user.new.message" text="Please Scan the QR Code Below"/></h4>
  </c:when>
  <c:otherwise>
-    <h4>Please Enter the OTP from <br>Google Authenticator Application in your Mobile</h4>
+     <h4><spring:message code="text.otp.user.enabled.message" text="Please Check the OTP from Phone App"/></h4>
  </c:otherwise>
 </c:choose>
+
   <div class='container'>
     <form:form action="${contextPath}/otp/checkOTP" method="post" commandName="otpFormData">
         <formElement:formPasswordBox idKey="otp"
@@ -42,10 +42,10 @@ h4{
     </form:form>
     <c:choose>
      <c:when test="${!isUserEnabledFor2FactorAuth}">
-           <img src="${commonResourcePath}/images/QRImages/${userName}.png" alt="image"/>
+           <img src="${commonResourcePath}/images/QRImages/${userName}.png" alt="QR Code Image"/>
      </c:when>
      <c:otherwise>
-        <h3>Note: Logged-In User is already Enabled For 2-Factor Authentication.</h3>
+        <h3><spring:message code="text.otp.user.enabled.status" text="Note: Logged-In User is already Enabled For 2-Factor Authentication."/></h3>
      </c:otherwise>
     </c:choose>
   </div>

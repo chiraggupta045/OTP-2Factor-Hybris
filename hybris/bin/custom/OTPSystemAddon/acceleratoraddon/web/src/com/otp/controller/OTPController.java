@@ -6,23 +6,18 @@ package com.otp.controller;
 import com.otp.data.OtpForm;
 import de.hybris.platform.acceleratorstorefrontcommons.annotations.RequireHardLogIn;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
-import de.hybris.platform.acceleratorstorefrontcommons.forms.UpdatePasswordForm;
-import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.otp.ControllerConstants;
 import com.otp.facade.SecretKeyFacade;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -85,6 +80,12 @@ public class OTPController extends AbstractPageController
 		final Model model, final RedirectAttributes redirectAttributes)
 	{
 		LOG.info("OTP Controller to check the OTP authenticity by comparing it with Google Authenticator generated OTP");
+
+		if (bindingResult.hasErrors())
+		{
+			LOG.error("OTP Form Data has binding error's, so returning back to login page.");
+			return REDIRECT_LOGIN_URL;
+		}
 
 		final boolean success = secretKeyFacade.validateCodeTypedByUser(otpFormData.getOtp());
 		if (success)
