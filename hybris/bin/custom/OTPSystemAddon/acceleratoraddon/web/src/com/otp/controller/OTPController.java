@@ -39,18 +39,23 @@ public class OTPController extends AbstractPageController
 
 	private static final Logger LOG = Logger.getLogger(OTPController.class);
 
+	/** Secret Key Facade */
 	@Autowired
 	private SecretKeyFacade secretKeyFacade;
 
+	/** OTP Facade */
 	@Autowired
 	private OtpFacade otpFacade;
 
+	/** Configuration Service */
 	@Autowired
 	private ConfigurationService configurationService;
 
+	/** Base Store Service */
 	@Autowired
 	private BaseStoreService baseStoreService;
 
+	/** Session Service */
 	@Autowired
 	private SessionService sessionService;
 
