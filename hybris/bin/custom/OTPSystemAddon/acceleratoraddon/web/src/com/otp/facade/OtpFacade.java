@@ -17,20 +17,23 @@ public interface OtpFacade
 	/**
 	 * send otp for vefication
 	 *
-	 * @param number
 	 * @param otp
 	 * @return
 	 */
-	ResponseEntity<OtpResponse> sendOtpForVerification(final String number, final String otp);
+	ResponseEntity<OtpResponse> sendOtpForVerification(final String otp);
 
 	/**
-	 * generate otp for authentication
 	 *
-	 * @param customerId
-	 * @param secretKey
+	 *  generate otp for authentication
 	 * @return
 	 */
-	OTP generateOtpForAuthentication(final String customerId, final SecretKey secretKey);
 
-	boolean verifyingOtp(final String otp);
+	OTP generateOtpForAuthentication();
+
+	/**
+	 *
+	 * @param otp
+	 * @return
+	 */
+	boolean validateSMSBasedOtp(final String otp);
 }

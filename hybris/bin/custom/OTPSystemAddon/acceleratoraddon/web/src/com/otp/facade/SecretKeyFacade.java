@@ -21,7 +21,7 @@ public interface SecretKeyFacade
 	 * @return
 	 * @throws Exception
 	 */
-	boolean validateCodeTypedByUser(String otp);
+	boolean validateGoogleAuthBasedOtp(String otp);
 
 	/**
 	 *this method will return the username of customer

@@ -3,15 +3,20 @@
  */
 package com.otp.facade.impl;
 
+import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.session.SessionService;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import de.hybris.platform.servicelayer.user.UserService;
 import org.apache.commons.codec.binary.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.css.Counter;
 
@@ -22,15 +27,25 @@ import com.otp.service.OtpIntegrationService;
 import com.otp.service.otpgenerator.OTP;
 import com.otp.service.otpgenerator.OTPEngine;
 
+import java.security.NoSuchAlgorithmException;
 
+@Component
 public class DefaultOtpFacade implements OtpFacade
 {
 	@Autowired
 	private OtpIntegrationService otpIntegrationService;
+
 	@Autowired
 	private ConfigurationService configurationService;
+
 	@Autowired
 	private SessionService sessionService;
+
+	@Autowired
+	private UserService userService;
+
+	private static final Logger LOG = Logger.getLogger(DefaultOtpFacade.class);
+
     //constants
 	public static String LANGUAGE = "com.otp.language";
 	public static String SENDER_Id = "com.otp.sender_id";
@@ -41,17 +56,15 @@ public class DefaultOtpFacade implements OtpFacade
 
 	/**
 	 * send otp for verification
-	 *
-	 * @param number
 	 * @param otp
 	 * @return
 	 */
 	@Override
-	public ResponseEntity<OtpResponse> sendOtpForVerification(final String number, final String otp)
+	public ResponseEntity<OtpResponse> sendOtpForVerification(final String otp)
 	{
 		final RestTemplate restTemplate = new RestTemplate();
 		// create the otp request payload
-		final OtpRequestPayload otpRequestPayload = getOtpRequestPayload(number, otp);
+		final OtpRequestPayload otpRequestPayload = getOtpRequestPayload("9821946885", otp);
 		final HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", (String) configurationService.getConfiguration().getProperty(OTP_KEY));
 		final ResponseEntity<OtpResponse> entity = otpIntegrationService.sendOtpForVerification(otpRequestPayload, restTemplate,
@@ -64,14 +77,13 @@ public class DefaultOtpFacade implements OtpFacade
 	/**
 	 * generate Otp for authentication
 	 *
-	 * @param customerId
-	 * @param secretKey
 	 * @return
 	 */
 	@Override
-	public OTP generateOtpForAuthentication(final String customerId, final SecretKey secretKey)
+	public OTP generateOtpForAuthentication()
 	{
-
+		String customerId = userService.getCurrentUser().getUid();
+		SecretKey secretKey = generateSessionKey();
 		final OTPEngine otpEngine = OTPEngine.getInstance(secretKey, new Counter()
 		{
 			@Override
@@ -97,17 +109,34 @@ public class DefaultOtpFacade implements OtpFacade
 		return otpEngine.generatePasswordWithHmac(params);
 	}
 
+	private SecretKey generateSessionKey()
+	{
+		KeyGenerator keyGen = null;
+		try
+		{
+			keyGen = KeyGenerator.getInstance("AES");
+		}
+		catch (final NoSuchAlgorithmException e)
+		{
+			LOG.debug("NoSuchAlgorithmException"+e.getMessage());
+		}
+		if (keyGen != null) {
+			keyGen.init(128);
+			return keyGen.generateKey();
+		}
+		return null;
+	}
+
 	/**
 	 * the method will verify otp
 	 * @param otp
 	 * @return
 	 */
 	@Override
-	public boolean verifyingOtp(final String otp)
+	public boolean validateSMSBasedOtp(final String otp)
 	{
-		final String userOtp = sessionService.getAttribute("otp");
+		final String userOtp = sessionService.getAttribute("OTP");
 		return StringUtils.equals(otp, userOtp);
-
 	}
 
 	/**

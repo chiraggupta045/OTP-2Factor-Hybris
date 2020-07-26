@@ -105,7 +105,5 @@ public class OTPEngine extends HMACEngine {
         String hmac = new StringBuffer(generateHMAC(password, paramsForHMAC)).append("O")
                 .append(generateHMAC(password, params)).toString();
 
-      //  logger.debug("Generated HMAC " + hmac + " for time lap " + lastTimeLap.getTime());
-
         return new OTP(password, hmac).generateChecksum();
     }}

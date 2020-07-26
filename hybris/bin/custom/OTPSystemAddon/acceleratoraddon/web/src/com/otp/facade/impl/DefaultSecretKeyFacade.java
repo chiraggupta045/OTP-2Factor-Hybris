@@ -10,7 +10,6 @@ import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.user.UserService;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -34,7 +33,6 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 @Component
 public class DefaultSecretKeyFacade implements SecretKeyFacade
 {
-
 	@Autowired
 	private UserService userService;
 
@@ -45,6 +43,8 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	private ConfigurationService configurationService;
 
 	private static final Logger LOG = Logger.getLogger(DefaultSecretKeyFacade.class);
+
+
 	/**
 	 * this method is to check loggedIn user is authenticate or not
 	 * @return
@@ -177,7 +177,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	 * @throws Exception
 	 */
 	@Override
-	public boolean validateCodeTypedByUser(final String otp)
+	public boolean validateGoogleAuthBasedOtp(final String otp)
 	{
 		final UserModel userModel = userService.getCurrentUser();
 		if (StringUtils.isNotEmpty(userModel.getSecretKeyForOTP()))
