@@ -100,7 +100,7 @@ public class DefaultOtpFacade implements OtpFacade
 				return OTPSystemAddonFacadeConstants.SEPARATOR;
 			}
 		});
-		final String params[] = new String[]
+		final String[] params = new String[]
 		{ customerId };
 		return otpEngine.generatePasswordWithHmac(params);
 	}
