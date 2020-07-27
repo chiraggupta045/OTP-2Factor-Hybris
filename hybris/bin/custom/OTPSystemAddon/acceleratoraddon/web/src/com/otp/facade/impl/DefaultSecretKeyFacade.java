@@ -3,27 +3,17 @@
  */
 package com.otp.facade.impl;
 
-import com.google.zxing.WriterException;
-import com.otp.constants.OTPSystemAddonFacadeConstants;
+import com.otp.service.OtpIntegrationService;
 import de.hybris.platform.core.model.user.UserModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.user.UserService;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.ByteMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.otp.facade.SecretKeyFacade;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
@@ -45,6 +35,10 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	@Autowired
 	private ConfigurationService configurationService;
 
+	/** OTP Integration Service */
+	@Autowired
+	private OtpIntegrationService otpIntegrationService;
+
 	/** Logger Instance for DefaultSecretKeyFacade */
 	private static final Logger LOG = Logger.getLogger(DefaultSecretKeyFacade.class);
 
@@ -55,7 +49,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 	 * @throws Exception
 	 */
 	@Override
-	public boolean checkUserAuthentication() throws Exception
+	public boolean checkUserAuthentication()
 	{
 		if (userService.getCurrentUser().isIsEnabledTwoFactorAuthentication())
 		{
@@ -72,7 +66,7 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 			{
 				userModel.setIsEnabledTwoFactorAuthentication(Boolean.TRUE);
 				userModel.setSecretKeyForOTP(secretKey);
-				getGoogleAuthenticatorBarCode(secretKey);
+				otpIntegrationService.getGoogleAuthenticatorBarCode(secretKey,userService);
 				modelService.save(userModel);
 				LOG.debug("New User Enabled for 2-Factor Authentication:" + userModel.getUid());
 				return Boolean.FALSE;
@@ -86,11 +80,9 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 
 	/**
 	 * Generate A random Secret Key from the GoogleAuthenticator API
-	 *
 	 * @return
-	 * @throws Exception
 	 */
-	public String generateSecretKey() throws Exception
+	public String generateSecretKey()
 	{
 		final GoogleAuthenticator gAuth = new GoogleAuthenticator();
 		try {
@@ -101,84 +93,12 @@ public class DefaultSecretKeyFacade implements SecretKeyFacade
 		{
 			LOG.error("Error occurred while creating secret key using GoogleAuthenticator API" +e.getMessage());
 		}
-		return "";
+		return StringUtils.EMPTY;
 	}
 
-	/**
-	 *this method will generate Qr Code on the basis of secret key
-	 * @param secretKey
-	 * @throws Exception
-	 */
-
-	public void getGoogleAuthenticatorBarCode(final String secretKey) throws Exception
-	{
-		// Company name
-		final String companyName = OTPSystemAddonFacadeConstants.COMPANY_NAME;
-		// Fetching the current user logged in
-		final String userEmail = userService.getCurrentUser().getUid();
-		// Generating the bar code data for the current user and secret key tagged to the user.
-		final String barCodeData = OTPSystemAddonFacadeConstants.QR_CODE_DATA_HEADER + URLEncoder.encode(companyName + OTPSystemAddonFacadeConstants.COLON + userEmail,
-				OTPSystemAddonFacadeConstants.QR_CODE_ENCODE_TYPE).replace(OTPSystemAddonFacadeConstants.PLUS, OTPSystemAddonFacadeConstants.QR_C0DE_CHAR_SEQ)
-				+ OTPSystemAddonFacadeConstants.QR_CODE_SECRET + URLEncoder.encode(secretKey, OTPSystemAddonFacadeConstants.QR_CODE_ENCODE_TYPE)
-				.replace(OTPSystemAddonFacadeConstants.PLUS, OTPSystemAddonFacadeConstants.QR_C0DE_CHAR_SEQ) + OTPSystemAddonFacadeConstants.QR_CODE_ISSUER
-				+ URLEncoder.encode(companyName, OTPSystemAddonFacadeConstants.QR_CODE_ENCODE_TYPE).replace(OTPSystemAddonFacadeConstants.PLUS, OTPSystemAddonFacadeConstants.QR_C0DE_CHAR_SEQ);
-		// Create QR Code based on the bar code data generated for the current logged in user and secret key associated to the user.
-		createQRCode(barCodeData);
-	}
-
-	/**
-	 *this method will generate Qr Code that user will scan in google authenticator app
-	 * @param barCodeData
-	 * @throws Exception
-	 */
-	public void createQRCode(final String barCodeData)
-	{
-		final UserModel userModel = userService.getCurrentUser();
-		final String userName = userModel.getName();
-		try
-		{
-			final ByteMatrix result = new QRCodeWriter().encode(barCodeData, BarcodeFormat.QR_CODE,
-				OTPSystemAddonFacadeConstants.WIDTH, OTPSystemAddonFacadeConstants.HEIGHT);
-			final BitMatrix bitMatrix = convertByteMatrixToBitMatrix(result);
-
-			final FileOutputStream out = new FileOutputStream(
-					configurationService.getConfiguration().getString(OTPSystemAddonFacadeConstants.OTP_QR_CODE) + OTPSystemAddonFacadeConstants.SLASH +
-							userName + OTPSystemAddonFacadeConstants.DOT + OTPSystemAddonFacadeConstants.IMAGE_FORMAT);
-			MatrixToImageWriter.writeToStream(bitMatrix, OTPSystemAddonFacadeConstants.IMAGE_FORMAT, out);
-		}
-		catch(IOException | WriterException e) {
-			LOG.error(e.getMessage());
-		}
-	}
-
-	/**
-	 *convert ByteMatrix to BitMatrix
-	 * @param matrix
-	 * @return
-	 */
-	private BitMatrix convertByteMatrixToBitMatrix(final ByteMatrix matrix)
-	{
-		final int matrixWidth = matrix.getWidth();
-		final int matrixHeight = matrix.getHeight();
-		final BitMatrix output = new BitMatrix(matrixWidth, matrixHeight);
-		output.clear();
-		for (int i = 0; i < matrixWidth; i++)
-		{
-			for (int j = 0; j < matrixHeight; j++)
-			{
-				if (matrix.get(i, j) == -1)
-				{
-					output.set(i, j);
-				}
-			}
-		}
-		return output;
-	}
-
-	/**this method is valide otp entered by user is valid or not
+	/**this method is validate otp entered by user is valid or not
 	 * @param otp
 	 * @return
-	 * @throws Exception
 	 */
 	@Override
 	public boolean validateGoogleAuthBasedOtp(final String otp)

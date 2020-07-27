@@ -12,14 +12,12 @@ public interface SecretKeyFacade
 	/**
 	 * this method is to check loggedIn user is authenticate or not
 	 * @return
-	 * @throws Exception
 	 */
-	boolean checkUserAuthentication() throws Exception;
+	boolean checkUserAuthentication();
 
 	/**this method is valide otp entered by user is valid or not
 	 * @param otp
 	 * @return
-	 * @throws Exception
 	 */
 	boolean validateGoogleAuthBasedOtp(String otp);
 
