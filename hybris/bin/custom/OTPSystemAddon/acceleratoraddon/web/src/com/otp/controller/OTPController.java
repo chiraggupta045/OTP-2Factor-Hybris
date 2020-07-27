@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 /**
- * @author chiragupta
+ * @author
  *
  */
 
@@ -96,8 +96,7 @@ public class OTPController extends AbstractPageController
 		{
 			LOG.error(e.getMessage());
 		}
-		OtpForm otpFormData = new OtpForm();
-		model.addAttribute(OTPSystemAddonControllerConstants.OTP_FORM_DATA, otpFormData);
+		model.addAttribute(OTPSystemAddonControllerConstants.OTP_FORM_DATA, new OtpForm());
 		model.addAttribute(OTPSystemAddonControllerConstants.USER_ALREADY_ENABLED_TWO_FACTOR_AUTH,isUserAlreadyEnabledFor2FactorAuth);
 		model.addAttribute(OTPSystemAddonControllerConstants.USER_NAME,secretKeyFacade.getCustomerUserName());
 		return ControllerConstants.Actions.Pages.Account.OTP;
