@@ -43,7 +43,7 @@ h4{
       </c:otherwise>
      </c:choose>
  <div class='container'>
-         <form:form action="${contextPath}/otp/checkOTP" method="post" commandName="otpFormData">
+         <form:form action="${contextPath}/otp/validateOTP" method="post" commandName="otpFormData">
              <formElement:formPasswordBox idKey="otp"
                                           labelKey="" path="otp" inputCSS="form-control"
                                           mandatory="true" />
