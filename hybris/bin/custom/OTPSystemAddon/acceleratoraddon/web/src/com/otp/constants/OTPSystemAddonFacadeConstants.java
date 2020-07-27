@@ -7,6 +7,7 @@ public final class OTPSystemAddonFacadeConstants {
     // constansts for qr image for otp
     public static final Integer WIDTH = 200;
     public static final Integer HEIGHT = 200;
+    public static final Integer KEY_GEN_INTEGER = 128;
 
     public static final String DOT = ".";
     public static final String IMAGE_FORMAT = "png";
@@ -24,6 +25,7 @@ public final class OTPSystemAddonFacadeConstants {
     public static final String LIST_STYLE = "A";
     public static final String SEPARATOR = "_";
     public static final String KEY_GEN_VALUE = "AES";
+
 
     public static final String  OTP_QR_CODE  = "otp.qr.code.images";
 

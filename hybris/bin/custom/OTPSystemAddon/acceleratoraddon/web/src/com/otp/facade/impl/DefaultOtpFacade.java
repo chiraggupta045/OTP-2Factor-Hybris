@@ -117,7 +117,7 @@ public class DefaultOtpFacade implements OtpFacade
 			LOG.debug("NoSuchAlgorithmException"+e.getMessage());
 		}
 		if (keyGen != null) {
-			keyGen.init(128);
+			keyGen.init(OTPSystemAddonFacadeConstants.KEY_GEN_INTEGER);
 			return keyGen.generateKey();
 		}
 		return null;
