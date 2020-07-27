@@ -21,6 +21,9 @@ public final class OTPSystemAddonFacadeConstants {
     public static final String SLASH = "/";
     public static final String AUTHORIZATION = "Authorization";
     public static final String OTP = "OTP";
+    public static final String LIST_STYLE = "A";
+    public static final String SEPARATOR = "_";
+    public static final String KEY_GEN_VALUE = "AES";
 
     public static final String  OTP_QR_CODE  = "otp.qr.code.images";
 

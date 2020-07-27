@@ -65,8 +65,6 @@ public class DefaultOtpFacade implements OtpFacade
 		return entity;
 	}
 
-
-
 	/**
 	 * generate Otp for authentication
 	 *
@@ -82,19 +80,19 @@ public class DefaultOtpFacade implements OtpFacade
 			@Override
 			public String getIdentifier()
 			{
-				return "OTP";
+				return OTPSystemAddonFacadeConstants.OTP;
 			}
 
 			@Override
 			public String getListStyle()
 			{
-				return "A";
+				return OTPSystemAddonFacadeConstants.LIST_STYLE;
 			}
 
 			@Override
 			public String getSeparator()
 			{
-				return "_";
+				return OTPSystemAddonFacadeConstants.SEPARATOR;
 			}
 		});
 		final String params[] = new String[]
@@ -107,7 +105,7 @@ public class DefaultOtpFacade implements OtpFacade
 		KeyGenerator keyGen = null;
 		try
 		{
-			keyGen = KeyGenerator.getInstance("AES");
+			keyGen = KeyGenerator.getInstance(OTPSystemAddonFacadeConstants.KEY_GEN_VALUE);
 		}
 		catch (final NoSuchAlgorithmException e)
 		{
