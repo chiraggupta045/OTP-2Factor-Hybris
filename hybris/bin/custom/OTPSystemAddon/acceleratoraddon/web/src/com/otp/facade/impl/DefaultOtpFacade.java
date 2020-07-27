@@ -4,7 +4,6 @@
 package com.otp.facade.impl;
 
 import com.otp.constants.OTPSystemAddonFacadeConstants;
-import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.session.SessionService;
 
