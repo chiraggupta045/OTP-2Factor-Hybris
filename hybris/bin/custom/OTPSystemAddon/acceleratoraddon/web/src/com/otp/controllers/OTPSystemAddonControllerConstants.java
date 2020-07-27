@@ -12,7 +12,16 @@ package com.otp.controllers;
 
 /**
  */
-public interface OTPSystemAddonControllerConstants
+public final class OTPSystemAddonControllerConstants
 {
 	// implement here controller constants used by this extension
+
+    private OTPSystemAddonControllerConstants() {
+    }
+
+    public static final String OTP_FORM_DATA = "otpFormData";
+    public static final String USER_ALREADY_ENABLED_TWO_FACTOR_AUTH = "isUserAlreadyEnabledFor2FactorAuth";
+    public static final String USER_NAME = "userName";
+    public static final String SMS_BASED_OTP = "smsBasedOTP";
+    public static final String OTP = "OTP";
 }

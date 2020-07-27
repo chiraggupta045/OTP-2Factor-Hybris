@@ -3,6 +3,7 @@
  */
 package com.otp.controller;
 
+import com.otp.controllers.OTPSystemAddonControllerConstants;
 import com.otp.data.OtpForm;
 import com.otp.enums.AuthenticationType;
 import com.otp.facade.OtpFacade;
@@ -86,9 +87,9 @@ public class OTPController extends AbstractPageController
 			{
 				OTP otp =otpFacade.generateOtpForAuthentication();
 				otpFacade.sendOtpForVerification(otp.getPassword());
-				sessionService.setAttribute("OTP",otp.getPassword());
+				sessionService.setAttribute(OTPSystemAddonControllerConstants.OTP,otp.getPassword());
 				LOG.info("Logged in user is enabled for SMS Based OTP ");
-				model.addAttribute("smsBasedOTP", Boolean.TRUE);
+				model.addAttribute(OTPSystemAddonControllerConstants.SMS_BASED_OTP, Boolean.TRUE);
 			}
 		}
 		catch (final Exception e)
@@ -96,9 +97,9 @@ public class OTPController extends AbstractPageController
 			LOG.error(e.getMessage());
 		}
 		OtpForm otpFormData = new OtpForm();
-		model.addAttribute("otpFormData", otpFormData);
-		model.addAttribute("isUserAlreadyEnabledFor2FactorAuth",isUserAlreadyEnabledFor2FactorAuth);
-		model.addAttribute("userName",secretKeyFacade.getCustomerUserName());
+		model.addAttribute(OTPSystemAddonControllerConstants.OTP_FORM_DATA, otpFormData);
+		model.addAttribute(OTPSystemAddonControllerConstants.USER_ALREADY_ENABLED_TWO_FACTOR_AUTH,isUserAlreadyEnabledFor2FactorAuth);
+		model.addAttribute(OTPSystemAddonControllerConstants.USER_NAME,secretKeyFacade.getCustomerUserName());
 		return ControllerConstants.Actions.Pages.Account.OTP;
 	}
 
