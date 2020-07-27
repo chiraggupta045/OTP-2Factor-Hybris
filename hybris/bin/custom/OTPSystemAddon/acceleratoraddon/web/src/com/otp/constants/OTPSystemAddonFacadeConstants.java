@@ -4,7 +4,7 @@ public final class OTPSystemAddonFacadeConstants {
 
     private OTPSystemAddonFacadeConstants() {
     }
-    // constansts for qr image for otp
+    // constants for qr image for otp
     public static final Integer WIDTH = 200;
     public static final Integer HEIGHT = 200;
     public static final Integer KEY_GEN_INTEGER = 128;
@@ -25,7 +25,7 @@ public final class OTPSystemAddonFacadeConstants {
     public static final String LIST_STYLE = "A";
     public static final String SEPARATOR = "_";
     public static final String KEY_GEN_VALUE = "AES";
-    
+
     public static final String  OTP_QR_CODE  = "otp.qr.code.images";
     //constants
     public static final String LANGUAGE = "com.otp.language";
@@ -34,6 +34,5 @@ public final class OTPSystemAddonFacadeConstants {
     public static final String ROUTE_ID = "com.otp.route_id";
     public static final String OTP_KEY = "com.otp.appKey";
     public static final String OTP_VARIABLE = "com.otp.variable";
-
 
 }
