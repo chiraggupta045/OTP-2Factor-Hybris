@@ -33,15 +33,19 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 @Component
 public class DefaultSecretKeyFacade implements SecretKeyFacade
 {
+	/** User Service */
 	@Autowired
 	private UserService userService;
 
+	/** Model Service */
 	@Autowired
 	private ModelService modelService;
 
+	/** Configuration Service */
 	@Autowired
 	private ConfigurationService configurationService;
 
+	/** Logger Instance for DefaultSecretKeyFacade */
 	private static final Logger LOG = Logger.getLogger(DefaultSecretKeyFacade.class);
 
 

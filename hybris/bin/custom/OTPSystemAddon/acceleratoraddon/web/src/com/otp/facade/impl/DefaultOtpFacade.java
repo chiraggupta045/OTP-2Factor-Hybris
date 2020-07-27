@@ -49,7 +49,7 @@ public class DefaultOtpFacade implements OtpFacade
 	@Autowired
 	private UserService userService;
 
-	/** Logger for DefaultOtpFacade */
+	/** Logger Instance for DefaultOtpFacade */
 	private static final Logger LOG = Logger.getLogger(DefaultOtpFacade.class);
 
 	/**
