@@ -25,10 +25,8 @@ public final class OTPSystemAddonFacadeConstants {
     public static final String LIST_STYLE = "A";
     public static final String SEPARATOR = "_";
     public static final String KEY_GEN_VALUE = "AES";
-
-
+    
     public static final String  OTP_QR_CODE  = "otp.qr.code.images";
-
     //constants
     public static final String LANGUAGE = "com.otp.language";
     public static final String SENDER_ID = "com.otp.sender_id";
