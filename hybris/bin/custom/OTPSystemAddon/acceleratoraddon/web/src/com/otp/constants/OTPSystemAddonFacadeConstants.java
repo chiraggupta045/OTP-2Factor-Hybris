@@ -19,9 +19,18 @@ public final class OTPSystemAddonFacadeConstants {
     public static final String QR_CODE_SECRET = "?secret=";
     public static final String QR_CODE_ISSUER = "&issuer=";
     public static final String SLASH = "/";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String OTP = "OTP";
 
     public static final String  OTP_QR_CODE  = "otp.qr.code.images";
 
+    //constants
+    public static final String LANGUAGE = "com.otp.language";
+    public static final String SENDER_ID = "com.otp.sender_id";
+    public static final String TEMPLATE_ID = "com.otp.template_id";
+    public static final String ROUTE_ID = "com.otp.route_id";
+    public static final String OTP_KEY = "com.otp.appKey";
+    public static final String OTP_VARIABLE = "com.otp.variable";
 
 
 }

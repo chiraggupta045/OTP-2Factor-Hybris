@@ -3,6 +3,7 @@
  */
 package com.otp.facade.impl;
 
+import com.otp.constants.OTPSystemAddonFacadeConstants;
 import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.session.SessionService;
@@ -46,14 +47,6 @@ public class DefaultOtpFacade implements OtpFacade
 
 	private static final Logger LOG = Logger.getLogger(DefaultOtpFacade.class);
 
-    //constants
-	public static String LANGUAGE = "com.otp.language";
-	public static String SENDER_Id = "com.otp.sender_id";
-	public static String TEMPLATE_ID = "com.otp.template_id";
-	public static String ROUTE_ID = "com.otp.route_id";
-	public static String OTP_KEY = "com.otp.appKey";
-	public static String OTP_VARIABLE = "com.otp.variable";
-
 	/**
 	 * send otp for verification
 	 * @param otp
@@ -66,7 +59,7 @@ public class DefaultOtpFacade implements OtpFacade
 		// create the otp request payload
 		final OtpRequestPayload otpRequestPayload = getOtpRequestPayload("9821946885", otp);
 		final HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", (String) configurationService.getConfiguration().getProperty(OTP_KEY));
+		headers.set(OTPSystemAddonFacadeConstants.AUTHORIZATION, (String) configurationService.getConfiguration().getProperty(OTPSystemAddonFacadeConstants.OTP_KEY));
 		final ResponseEntity<OtpResponse> entity = otpIntegrationService.sendOtpForVerification(otpRequestPayload, restTemplate,
 				headers);
 		return entity;
@@ -135,7 +128,7 @@ public class DefaultOtpFacade implements OtpFacade
 	@Override
 	public boolean validateSMSBasedOtp(final String otp)
 	{
-		final String userOtp = sessionService.getAttribute("OTP");
+		final String userOtp = sessionService.getAttribute(OTPSystemAddonFacadeConstants.OTP);
 		return StringUtils.equals(otp, userOtp);
 	}
 
@@ -147,12 +140,12 @@ public class DefaultOtpFacade implements OtpFacade
 	 */
 	private OtpRequestPayload getOtpRequestPayload(String number, String otp) {
 		final OtpRequestPayload otpRequestPayload = new OtpRequestPayload();
-		otpRequestPayload.setLanguage((String) configurationService.getConfiguration().getProperty(LANGUAGE));
-		otpRequestPayload.setSender_id((String) configurationService.getConfiguration().getProperty(SENDER_Id));
+		otpRequestPayload.setLanguage((String) configurationService.getConfiguration().getProperty(OTPSystemAddonFacadeConstants.LANGUAGE));
+		otpRequestPayload.setSender_id((String) configurationService.getConfiguration().getProperty(OTPSystemAddonFacadeConstants.SENDER_ID));
 		otpRequestPayload.setNumbers(number);
-		otpRequestPayload.setMessage((String) configurationService.getConfiguration().getProperty(TEMPLATE_ID));
-		otpRequestPayload.setRoute((String) configurationService.getConfiguration().getProperty(ROUTE_ID));
-		otpRequestPayload.setVariables((String) configurationService.getConfiguration().getProperty(OTP_VARIABLE));
+		otpRequestPayload.setMessage((String) configurationService.getConfiguration().getProperty(OTPSystemAddonFacadeConstants.TEMPLATE_ID));
+		otpRequestPayload.setRoute((String) configurationService.getConfiguration().getProperty(OTPSystemAddonFacadeConstants.ROUTE_ID));
+		otpRequestPayload.setVariables((String) configurationService.getConfiguration().getProperty(OTPSystemAddonFacadeConstants.OTP_VARIABLE));
 		otpRequestPayload.setVariables("{#BB#}");
 		otpRequestPayload.setVariables_values(otp);
 		return otpRequestPayload;
