@@ -109,7 +109,7 @@ public class OTPController extends AbstractPageController
 	 * @param otpFormData
 	 * @return
 	 */
-	@RequestMapping(value = "/checkOTP", method = RequestMethod.POST)
+	@RequestMapping(value = "/validateOTP", method = RequestMethod.POST)
 	@RequireHardLogIn
 	public String validateOTP(final OtpForm otpFormData, final BindingResult bindingResult,
 		final Model model, final RedirectAttributes redirectAttributes)
