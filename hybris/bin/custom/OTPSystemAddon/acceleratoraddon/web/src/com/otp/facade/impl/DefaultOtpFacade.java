@@ -33,18 +33,23 @@ import java.security.NoSuchAlgorithmException;
 @Component
 public class DefaultOtpFacade implements OtpFacade
 {
+	/** OTP Integration Service */
 	@Autowired
 	private OtpIntegrationService otpIntegrationService;
 
+	/** Configuration Service */
 	@Autowired
 	private ConfigurationService configurationService;
 
+	/** Session Service */
 	@Autowired
 	private SessionService sessionService;
 
+	/** User Service */
 	@Autowired
 	private UserService userService;
 
+	/** Logger for DefaultOtpFacade */
 	private static final Logger LOG = Logger.getLogger(DefaultOtpFacade.class);
 
 	/**
